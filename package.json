@@ -1,0 +1,27 @@
+{
+  "name": "wuxiang",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Wuxiang Agent Interface Runtime foundation",
+  "workspaces": ["packages/*", "examples/playground"],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "npm run build --workspaces --if-present && npm run dev --workspace @wuxiang/playground",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "check": "npm run build && npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
+    "@vitejs/plugin-react": "4.4.1",
+    "jsdom": "26.0.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "typescript": "5.7.3",
+    "vite": "6.4.3",
+    "vitest": "3.2.7"
+  },
+  "license": "UNLICENSED",
+  "engines": { "node": ">=20.0.0" }
+}

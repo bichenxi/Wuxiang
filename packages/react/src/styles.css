@@ -1,0 +1,12 @@
+:root { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #142019; background: #f4f7f2; }
+.wx-surface { display: grid; gap: 1rem; color: #142019; }
+.wx-card { border: 1px solid #dce6dc; border-radius: 18px; background: #fff; padding: 1.25rem; box-shadow: 0 8px 28px #16351a0b; }
+.wx-card h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
+.wx-card-content { margin-top: .95rem; }
+.wx-stack { display: flex; }.wx-stack-row { flex-direction: row; flex-wrap: wrap; align-items: end; }.wx-stack-column { flex-direction: column; }.wx-gap-sm { gap: .55rem; }.wx-gap-md { gap: .9rem; }.wx-gap-lg { gap: 1.35rem; }
+.wx-text { margin: 0; line-height: 1.6; }.wx-text-muted { color: #6a776c; }.wx-text-accent { color: #26734a; }.wx-text-danger, .wx-error { color: #b43b3b; }
+.wx-form { display: grid; gap: 1rem; }.wx-field { display: grid; gap: .4rem; color: #415045; font-size: .9rem; }.wx-field b { color: #bd5b35; }.wx-field input, .wx-field select { border: 1px solid #cad8ca; border-radius: 10px; background: #fcfdfb; color: #142019; padding: .72rem .8rem; font: inherit; min-width: 0; }.wx-field input:focus, .wx-field select:focus { outline: 3px solid #b5dfbd; border-color: #4b9464; }
+.wx-button { border: 0; border-radius: 10px; padding: .7rem 1rem; font: inherit; font-weight: 650; cursor: pointer; transition: transform .15s ease, opacity .15s ease; }.wx-button:hover:not(:disabled) { transform: translateY(-1px); }.wx-button:disabled { cursor: not-allowed; opacity: .5; }.wx-button-primary { background: #25734a; color: #fff; }.wx-button-secondary { background: #e0eee2; color: #225f3d; }.wx-button-quiet { background: transparent; color: #387552; }
+.wx-table-wrap { overflow-x: auto; }.wx-table-wrap table { width: 100%; border-collapse: collapse; font-size: .9rem; }.wx-table-wrap th, .wx-table-wrap td { text-align: left; border-bottom: 1px solid #e8eee8; padding: .7rem .5rem; }.wx-table-wrap th { color: #647267; font-weight: 600; }
+.wx-progress { display: grid; gap: .4rem; }.wx-progress-label { display: flex; justify-content: space-between; color: #6a776c; font-size: .82rem; }.wx-progress progress { width: 100%; height: .55rem; accent-color: #3e8b5a; }
+@media (max-width: 600px) { .wx-stack-row { flex-direction: column; align-items: stretch; } .wx-button { width: 100%; } }

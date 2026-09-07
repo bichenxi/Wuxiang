@@ -1,0 +1,12 @@
+{
+  "name": "@wuxiang/react",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" }, "./styles.css": "./dist/styles.css" },
+  "dependencies": { "@wuxiang/protocol": "0.1.0", "@wuxiang/runtime": "0.1.0", "react": "19.0.0" },
+  "scripts": { "build": "tsc -p tsconfig.json && cp src/styles.css dist/styles.css", "typecheck": "tsc -p tsconfig.json --noEmit", "test": "vitest run --environment jsdom" },
+  "license": "UNLICENSED"
+}
