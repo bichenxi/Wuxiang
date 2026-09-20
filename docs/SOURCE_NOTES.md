@@ -1,6 +1,6 @@
 # 外部来源笔记
 
-记录日期：2026-09-07。来源事实不等于无相能力或商业结论。
+记录日期：2026-09-20（用户讨论来源另记阅读日期）。来源事实不等于无相能力或商业结论。
 
 ## 用户讨论来源
 
@@ -11,9 +11,17 @@
 
 ## A2UI
 
-- 来源：[a2ui.org](https://a2ui.org/)
-- 摘要：页面列出 A2UI `v0.9.1` 为当前版本、`v1.0` 为候选版本；其核心是 Agent 发送声明式组件描述，由客户端 catalog 渲染。它提供协议、组件和 renderer 生态，但无相 M0 尚未兼容它。
-- 对本项目的影响：M1 前评估映射/复用，M0 的 `0.1` 仅作内部试验协议。不要把官网的安全表述改写成无相保证。
+- 来源：[A2UI v0.9.1 协议](https://a2ui.org/specification/v0.9.1-a2ui/)、[A2UI v1.0 candidate 协议](https://a2ui.org/specification/v1.0-a2ui/)、[项目首页与版本状态](https://a2ui.org/)
+- 核验日期：2026-09-20
+- 摘要：官方首页列 `v0.9.1` 为当前版本、`v1.0` 为候选。v0.9.1 用 `createSurface`、`updateComponents`、`updateDataModel`、`deleteSurface` 四类 server-to-client 消息；组件按扁平列表和 ID 引用组织，UI 结构与 data model 分开更新。
+- 对本项目的影响：ADR-0008 选择 M1 继续使用原生 Surface `0.1`，此轮不做 adapter，也不声称兼容。A2UI 官网标示 Apache 2.0；若未来分发时复制/改编相关规范或代码，应先由项目所有者复核来源与许可证事项。本笔记不构成法律分析。
+
+## OpenAI structured output 与 JSON mode
+
+- 来源：[Structured model outputs（Responses API）](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses)
+- 核验日期：2026-09-20
+- 摘要：Responses API 可用 `text.format` 配置 JSON mode 或 JSON Schema Structured Outputs。两者都输出 JSON，但 JSON mode 不保证匹配业务 schema；官方建议在可用时优先 Structured Outputs。响应处理需区分拒答、incomplete 和有效文本。
+- 对本项目的影响：M1 本轮选择 JSON mode，之后仍用无相 `parseSurface` 做最终校验并至多修复一次；这是为了先避免维护第二套严格 nullable 深递归 schema 的阶段取舍，并非 OpenAI 推荐 JSON mode 优先，也不代表稳定 schema 兼容性。应结合真实校验失败率、模型支持与 schema 维护成本复核是否迁移。
 
 ## MCP Apps
 

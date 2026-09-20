@@ -3,15 +3,22 @@
   "private": true,
   "version": "0.1.0",
   "description": "Wuxiang Agent Interface Runtime foundation",
-  "workspaces": ["packages/*", "examples/playground"],
+  "workspaces": [
+    "packages/protocol",
+    "packages/runtime",
+    "packages/agent",
+    "packages/react",
+    "examples/playground"
+  ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "dev": "npm run build --workspaces --if-present && npm run dev --workspace @wuxiang/playground",
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
+    "build": "npm run build --workspace @wuxiang/protocol && npm run build --workspace @wuxiang/runtime && npm run build --workspace @wuxiang/agent && npm run build --workspace @wuxiang/react && npm run build --workspace @wuxiang/playground",
+    "dev": "npm run build && npm run dev --workspace @wuxiang/playground",
+    "typecheck": "npm run typecheck --workspace @wuxiang/protocol && npm run typecheck --workspace @wuxiang/runtime && npm run typecheck --workspace @wuxiang/agent && npm run typecheck --workspace @wuxiang/react && npm run typecheck --workspace @wuxiang/playground",
+    "test": "npm run test --workspace @wuxiang/protocol && npm run test --workspace @wuxiang/runtime && npm run test --workspace @wuxiang/agent && npm run test --workspace @wuxiang/react && npm run test --workspace @wuxiang/playground",
     "check": "npm run build && npm run typecheck && npm test"
   },
   "devDependencies": {
+    "@types/node": "22.15.21",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "@vitejs/plugin-react": "4.4.1",
@@ -23,5 +30,7 @@
     "vitest": "3.2.7"
   },
   "license": "UNLICENSED",
-  "engines": { "node": ">=20.0.0" }
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }

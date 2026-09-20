@@ -1,4 +1,4 @@
-# M0 SDK API
+# SDK API
 
 本文对应当前 workspace 中 `@wuxiang/protocol`、`@wuxiang/runtime` 和 `@wuxiang/react` 的源码导出。包目前是 private，示例用于仓库内 playground 或 workspace 消费者；它不是已发布 npm 包的安装承诺。
 
@@ -155,3 +155,11 @@ runtime 只验证协议 allowlist 和当前 revision；它不验证用户身份�
 `SurfaceRenderer` 对传入 surface 再次调用 `parseSurface`；失败时渲染 `role="alert"` 的错误区域，不触发 event。输入和 select 的初始值来自节点 value，用户修改值留在 renderer 的本地 state；表单提交时以当前字段值作为 payload。组件 disabled 或 renderer `readOnly` 时不会发出相应操作。
 
 当前 `SurfaceRendererProps` 没有 registry 注入字段；`ComponentRegistry` 和 `createDefaultRegistry` 是已导出的类型/工厂，custom registry 的接线不属于 M0 已承诺的 renderer API。
+
+## `@wuxiang/agent`
+
+源码入口：[packages/agent/src/index.ts](../packages/agent/src/index.ts)。该包当前只作为本地服务端 workspace 包使用，不把密钥或 OpenAI 调用暴露到浏览器。
+
+`createAgentService({ apiKey, model, fetch, timeoutMs })` 创建生成服务。`generate` 接收 `requestId`、`prompt`、`surfaceId`、`revision`，可选带上紧邻前一版本的 `currentSurface` 和已由 runtime 校验的 `event`。模型返回的 JSON envelope 必须先通过本地 protocol 校验，最多进行一次有限修复；失败会返回带 `reason` 的文本 fallback。诊断包含 attempts、durationMs、outcome，若供应商提供则累计 input/output token。
+
+`createAgentHttpHandler(service)` 提供两个本地路由：`GET /api/agent/status` 返回配置状态；`POST /api/agent/generate` 返回 UI 或文本结果。handler 只接受 loopback 同源请求、JSON body，并限制请求大小；`OPENAI_API_KEY` 和 `OPENAI_MODEL` 只应通过服务端环境变量注入。真实模型调用依赖运行环境配置，仓库测试使用 mock fetch 验证协议和失败边界。

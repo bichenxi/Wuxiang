@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import type { Surface, SurfaceEvent, SurfaceNode } from "@wuxiang/protocol";
 import { parseSurface } from "@wuxiang/protocol";
 import "./styles.css";
@@ -10,6 +10,22 @@ export type ComponentRegistry = ReadonlyMap<SurfaceNode["type"], ComponentRender
 export type RenderContext = { values: Record<string, string>; setValue: (field: string, value: string) => void; emit: (actionId: string, payload?: unknown) => void; readOnly: boolean; formSubmitActionId?: string };
 
 const actionPayload = (context: RenderContext): Record<string, string> => ({ ...context.values });
+
+type FormDraft = {
+  surfaceId: string;
+  revision: number;
+  values: Record<string, string>;
+};
+
+function initialValues(surface: Surface): Record<string, string> {
+  const values: Record<string, string> = Object.create(null) as Record<string, string>;
+  const visit = (node: SurfaceNode): void => {
+    if (node.type === "input" || node.type === "select") values[node.field] = node.value ?? "";
+    if ("children" in node) node.children.forEach(visit);
+  };
+  surface.nodes.forEach(visit);
+  return values;
+}
 
 export function createDefaultRegistry(): ComponentRegistry {
   const registry = new Map<SurfaceNode["type"], ComponentRenderer>();
@@ -32,11 +48,29 @@ function RenderNode({ node, context, registry }: { node: SurfaceNode; context: R
 
 export function SurfaceRenderer({ surface, onEvent, className, readOnly = false }: SurfaceRendererProps): ReactNode {
   const parsed = useMemo(() => { try { return { surface: parseSurface(surface), error: null }; } catch (error) { return { surface: null, error: error instanceof Error ? error.message : "无法读取 surface" }; } }, [surface]);
-  const [values, setValues] = useState<Record<string, string>>({});
-  useEffect(() => { if (!parsed.surface) return; const next: Record<string, string> = {}; const visit = (node: SurfaceNode): void => { if (node.type === "input" || node.type === "select") next[node.field] = node.value ?? ""; if ("children" in node) node.children.forEach(visit); }; parsed.surface.nodes.forEach(visit); setValues(next); }, [parsed.surface]);
+  const [draft, setDraft] = useState<FormDraft>(() => {
+    const initial = parsed.surface;
+    return initial
+      ? { surfaceId: initial.surfaceId, revision: initial.revision, values: initialValues(initial) }
+      : { surfaceId: "", revision: -1, values: Object.create(null) as Record<string, string> };
+  });
   if (!parsed.surface) return <div className={`wx-surface ${className ?? ""}`} role="alert"><p className="wx-error">当前界面数据无法读取：{parsed.error}</p></div>;
   const safeSurface = parsed.surface;
-  const context: RenderContext = { values, setValue: (field, value) => setValues((current) => ({ ...current, [field]: value })), emit: (actionId, payload) => onEvent({ actionId, payload }), readOnly };
+  const sameSnapshot = draft.surfaceId === safeSurface.surfaceId && draft.revision === safeSurface.revision;
+  const values = sameSnapshot ? draft.values : initialValues(safeSurface);
+  const context: RenderContext = {
+    values,
+    setValue: (field, value) => setDraft((current) => {
+      const currentValues = current.surfaceId === safeSurface.surfaceId && current.revision === safeSurface.revision
+        ? current.values
+        : initialValues(safeSurface);
+      const nextValues: Record<string, string> = Object.assign(Object.create(null), currentValues);
+      nextValues[field] = value;
+      return { surfaceId: safeSurface.surfaceId, revision: safeSurface.revision, values: nextValues };
+    }),
+    emit: (actionId, payload) => onEvent({ actionId, payload }),
+    readOnly,
+  };
   return <div className={`wx-surface ${className ?? ""}`}>{safeSurface.nodes.map((node) => <RenderNode key={node.id} node={node} context={context} />)}</div>;
 }
 
